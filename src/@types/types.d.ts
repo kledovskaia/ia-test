@@ -9,6 +9,7 @@ type Message = {
   id: string;
   region: string;
   senderNumber: string;
+  avatar?: string;
 };
 
 type Attachment = {

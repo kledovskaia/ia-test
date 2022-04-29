@@ -11,32 +11,3 @@ root.render(
     <App />
   </Provider>
 );
-
-// let lastAlreadyFetchedMessage = [...newMessages]
-//       .reverse()
-//       .find((message) => message.id === lastMessage.id);
-//     while (!lastAlreadyFetchedMessage) {
-//       let previousMessages = await getMessages({
-//         oldMessages: true,
-//         messageId: newMessages[0].id,
-//       });
-//       if (!previousMessages.length) return newMessages;
-//       newMessages.unshift(...previousMessages);
-//       lastAlreadyFetchedMessage = [...newMessages]
-//         .reverse()
-//         .find((message) => message.id === lastMessage.id);
-//     }
-
-//     if (lastAlreadyFetchedMessage) {
-//       const lastAlreadyFetchedMessageIndex = newMessages.findIndex(
-//         (item) => item.id === lastAlreadyFetchedMessage?.id
-//       );
-
-//       if (lastAlreadyFetchedMessageIndex !== -1) {
-//         return newMessages.slice(
-//           -(newMessages.length - 1 - lastAlreadyFetchedMessageIndex)
-//         );
-//       }
-//     } else {
-//       return newMessages;
-//     }

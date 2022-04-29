@@ -1,23 +1,42 @@
-import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
-import { store } from './app/store';
+import { store } from './redux/store';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
-import './index.css';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
 
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </React.StrictMode>
+  <Provider store={store}>
+    <App />
+  </Provider>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+// let lastAlreadyFetchedMessage = [...newMessages]
+//       .reverse()
+//       .find((message) => message.id === lastMessage.id);
+//     while (!lastAlreadyFetchedMessage) {
+//       let previousMessages = await getMessages({
+//         oldMessages: true,
+//         messageId: newMessages[0].id,
+//       });
+//       if (!previousMessages.length) return newMessages;
+//       newMessages.unshift(...previousMessages);
+//       lastAlreadyFetchedMessage = [...newMessages]
+//         .reverse()
+//         .find((message) => message.id === lastMessage.id);
+//     }
+
+//     if (lastAlreadyFetchedMessage) {
+//       const lastAlreadyFetchedMessageIndex = newMessages.findIndex(
+//         (item) => item.id === lastAlreadyFetchedMessage?.id
+//       );
+
+//       if (lastAlreadyFetchedMessageIndex !== -1) {
+//         return newMessages.slice(
+//           -(newMessages.length - 1 - lastAlreadyFetchedMessageIndex)
+//         );
+//       }
+//     } else {
+//       return newMessages;
+//     }

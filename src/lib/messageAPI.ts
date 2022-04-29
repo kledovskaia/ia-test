@@ -28,6 +28,6 @@ export const getMessages = async (payload?: RequestMessagesParams) => {
 
     return Messages || [];
   } catch (error) {
-    throw new Error('Error fetching messages');
+    throw new Error((error as Error).message || 'Error fetching messages');
   }
 };

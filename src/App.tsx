@@ -1,9 +1,16 @@
+import type { DetailedHTMLProps, FC, HTMLAttributes } from 'react';
 import { useEffect, useRef } from 'react';
 import { useMessages } from './hooks/useMessages';
+import cn from 'classnames';
+import styles from './App.module.scss';
+import Message from './components/Message/Message';
+import MessagesFeed from './components/MessagesFeed/MessagesFeed';
 
-const App = () => {
+type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+
+const App: FC<Props> = ({ className, ...props }) => {
   const { data: messages, loading, error } = useMessages();
-  const airSpace = useRef<HTMLLIElement>(null);
+  const airSpace = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!airSpace.current) return;
@@ -17,17 +24,13 @@ const App = () => {
   }, [messages]);
 
   return (
-    <div className="App">
-      <ul>
+    <div className={cn(className, styles.container)} {...props}>
+      <MessagesFeed>
         {messages.map((message, index) => (
-          // Так как сервер отдает фейковые новые сообщения,
-          // у нас есть сущности с одинаковыми id,
-          // поэтому пришлось сконкатенировать их с индексом,
-          // в условиях с уникальными id, поменять на просто {variable}.id
-          <li key={index + message.id}>{message.content}</li>
+          <Message key={index + message.id} message={message} />
         ))}
-        <li style={{ minHeight: '100px' }} ref={airSpace}></li>
-      </ul>
+      </MessagesFeed>
+      <div style={{ minHeight: '100px' }} ref={airSpace}></div>
     </div>
   );
 };

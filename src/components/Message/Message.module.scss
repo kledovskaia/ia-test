@@ -14,9 +14,10 @@
     'avatar author controls'
     'avatar channel controls'
     'date content .'
+    'date more .'
     'date attachments .'
     'tags tags tags';
-  grid-template-rows: repeat(5, auto);
+  grid-template-rows: repeat(6, auto);
   align-items: baseline;
   column-gap: 1rem;
 
@@ -34,7 +35,8 @@
 
   &__date,
   &__author,
-  &__channel {
+  &__channel,
+  &__more {
     color: var(--gray);
   }
 
@@ -46,12 +48,14 @@
   &__avatar {
     grid-area: avatar;
   }
+
   &__author {
     font-weight: normal;
     align-self: center;
     grid-area: author;
     font-size: 1.6rem;
   }
+
   &__channel {
     line-height: 1.5;
     grid-area: channel;
@@ -59,13 +63,31 @@
     font-weight: 400;
     font-size: 1.2rem;
   }
+
   &__date {
     grid-area: date;
   }
+
   &__content {
     line-height: 1.35;
     grid-area: content;
   }
+
+  &__more {
+    font-size: 1.2rem;
+    padding: 0.2rem 0 0.4rem;
+    grid-area: more;
+    border: 0;
+    background: none;
+    justify-self: start;
+    cursor: pointer;
+    transition: color 0.2s;
+
+    &:hover {
+      color: var(--primary);
+    }
+  }
+
   &__attachments {
     grid-area: attachments;
 
@@ -74,6 +96,7 @@
       max-width: 26rem;
     }
   }
+
   &__tags {
     grid-area: tags;
   }

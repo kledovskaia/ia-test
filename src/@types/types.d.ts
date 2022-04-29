@@ -1,7 +1,12 @@
-type InferArgType<T> = T extends (r: infer R) => void ? R : never;
+type InferArgType<T> = T extends (arg: infer R) => void ? R : never;
+
+type Attachment = {
+  type: string;
+  url: string;
+};
 
 type Message = {
-  attachments: Attachment[];
+  attachments: TAttachment[];
   author: string;
   channel: string;
   content: string;
@@ -10,9 +15,4 @@ type Message = {
   region: string;
   senderNumber: string;
   avatar?: string;
-};
-
-type Attachment = {
-  type: string;
-  url: string;
 };

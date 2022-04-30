@@ -12,14 +12,16 @@ const Loader: FC<Props> = ({ className, loading, ...props }) => {
   if (!loading) return null;
 
   return (
-    <div className={cn(className, styles.loader)} {...props}>
-      Loading...
+    <div className={cn(className, styles.container)} {...props}>
+      <div className={styles.loader}></div>
     </div>
   );
 };
 
 const mapStateToProps = (state: RootState) => ({
-  loading: state.messages.loading,
+  loading: state.messages.loading && !state.messages.data.length,
 });
 
-export default connect(mapStateToProps)(memo(Loader));
+const mapDispatchToProps = () => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(memo(Loader));

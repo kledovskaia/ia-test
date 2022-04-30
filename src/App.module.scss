@@ -1,5 +1,7 @@
 .app {
+  min-height: 100vh;
   display: flex;
+  justify-content: center;
 
   &__content {
     width: 88rem;

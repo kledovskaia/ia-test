@@ -13,7 +13,7 @@ const Error: FC<Props> = ({ className, children, error, ...props }) => {
 
   return (
     <div className={cn(className, styles.error)} {...props}>
-      {children}
+      {error || children}
     </div>
   );
 };
@@ -22,4 +22,6 @@ const mapStateToProps = (state: RootState) => ({
   error: state.messages.error,
 });
 
-export default connect(mapStateToProps)(memo(Error));
+const mapDispatchToProps = () => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(memo(Error));

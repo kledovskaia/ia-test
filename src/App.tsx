@@ -43,17 +43,19 @@ const App: FC<Props> = ({ setIsFavorite, className, ...props }) => {
   return (
     <>
       <div className={cn(className, styles.app)} {...props}>
-        <Button
-          className={cn(styles.app__button, styles.app__button_up)}
-          handleClick={handleScrollTop}
-        >
-          <ArrowIcon />
-        </Button>
+        {!!messages.length && (
+          <Button
+            className={cn(styles.app__button, styles.app__button_up)}
+            handleClick={handleScrollTop}
+          >
+            <ArrowIcon />
+          </Button>
+        )}
 
         <div className={styles.app__content}>
+          {!!messages.length && <Button handleClick={handleToggleOrder} />}
           <Error />
           <Loader />
-          <Button handleClick={handleToggleOrder} />
 
           <MessagesFeed>
             {messages.map((message, index) => (
@@ -66,12 +68,14 @@ const App: FC<Props> = ({ setIsFavorite, className, ...props }) => {
             ))}
           </MessagesFeed>
         </div>
-        <Button
-          className={cn(styles.app__button, styles.app__button_down)}
-          handleClick={handleScrollBottom}
-        >
-          <ArrowIcon />
-        </Button>
+        {!!messages.length && (
+          <Button
+            className={cn(styles.app__button, styles.app__button_down)}
+            handleClick={handleScrollBottom}
+          >
+            <ArrowIcon />
+          </Button>
+        )}
       </div>
     </>
   );

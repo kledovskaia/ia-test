@@ -1,2 +1,8 @@
 .error {
+  margin: 1rem auto;
+  font-weight: bold;
+  color: var(--error);
+  border: 0.3rem solid currentColor;
+  border-radius: 0.5rem;
+  padding: 1rem;
 }

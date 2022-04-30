@@ -1,2 +1,58 @@
 .app {
+  display: flex;
+
+  &__content {
+    width: 88rem;
+    max-width: 70vw;
+  }
+
+  &__button {
+    flex: 1;
+    cursor: pointer;
+    display: block;
+    padding: 0.5rem;
+    font-size: 2rem;
+    border: 0;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: var(--gray-40);
+      svg {
+        fill: var(--gray);
+      }
+    }
+
+    svg {
+      transition: fill 0.2s;
+      max-height: 5rem;
+      max-width: 5rem;
+      fill: var(--gray-light-2);
+    }
+
+    &_down {
+      svg {
+        position: fixed;
+        top: 50%;
+        left: 1rem;
+        transform: translateY(-50%);
+      }
+    }
+    &_up {
+      svg {
+        position: fixed;
+        top: 50%;
+        right: 1rem;
+        transform: translateY(-50%);
+      }
+
+      svg {
+        transform: rotate(180deg);
+      }
+    }
+  }
 }

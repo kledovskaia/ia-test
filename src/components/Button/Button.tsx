@@ -12,7 +12,7 @@ type Props = {
 
 const Button: FC<Props> = ({ handleClick, className, children, ...props }) => (
   <button
-    className={cn(className, styles.button)}
+    className={cn(styles.button, className)}
     onClick={handleClick}
     {...props}
   >

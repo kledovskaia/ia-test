@@ -1,4 +1,4 @@
-import type { DetailedHTMLProps, FC, HTMLAttributes } from 'react';
+import { DetailedHTMLProps, FC, HTMLAttributes, useState } from 'react';
 import { useEffect, useRef } from 'react';
 import { useMessages } from './hooks/useMessages';
 import cn from 'classnames';
@@ -10,27 +10,44 @@ type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
 const App: FC<Props> = ({ className, ...props }) => {
   const { data: messages, loading, error } = useMessages();
+  const lastMessage = useRef<HTMLLIElement>(null);
+  const previousOffsetTop = useRef(0);
+  const messagesContainer = useRef<HTMLDivElement>(null);
   const airSpace = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (!lastMessage.current) return;
     if (!airSpace.current) return;
-    const rect = airSpace.current.getBoundingClientRect();
-    const elementTop = rect.top;
-    const elementBottom = rect.bottom;
-    const isVisible = elementTop < window.innerHeight && elementBottom >= 0;
-    if (isVisible) {
-      airSpace.current.scrollIntoView({ behavior: 'smooth' });
+    const difference = Math.abs(
+      previousOffsetTop.current - airSpace.current.offsetTop
+    );
+
+    const shouldScroll =
+      document.body.offsetHeight - window.scrollY - window.innerHeight <=
+      difference;
+
+    previousOffsetTop.current = airSpace.current.offsetTop;
+
+    if (shouldScroll) {
+      lastMessage.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
 
   return (
     <div className={cn(className, styles.container)} {...props}>
-      <MessagesFeed>
-        {messages.map((message, index) => (
-          <Message key={index + message.id} message={message} />
-        ))}
-      </MessagesFeed>
-      <div style={{ minHeight: '100px' }} ref={airSpace}></div>
+      <div ref={messagesContainer}>
+        <MessagesFeed>
+          {messages.map((message, index) => (
+            <li
+              key={`${index}-${message.id}`}
+              ref={index === messages.length - 1 ? lastMessage : null}
+            >
+              <Message message={message} />
+            </li>
+          ))}
+        </MessagesFeed>
+        <div ref={airSpace}></div>
+      </div>
     </div>
   );
 };

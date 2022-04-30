@@ -88,12 +88,15 @@
   }
 
   &__attachments {
+    height: 26rem;
     padding-top: 0.8rem;
     grid-area: attachments;
 
     & img,
     & video {
-      max-width: 26rem;
+      border-radius: 0.5rem;
+      max-height: 100%;
+      max-width: 100%;
     }
   }
 

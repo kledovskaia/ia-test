@@ -11,12 +11,12 @@ export const useMessages = () => {
   useEffect(() => {
     dispatch(fetchMessages());
 
-    // const interval = setInterval(
-    //   () => dispatch(fetchMessages()),
-    //   INTERVAL_SEC * 1000
-    // );
+    const interval = setInterval(
+      () => dispatch(fetchMessages()),
+      INTERVAL_SEC * 1000
+    );
 
-    // return () => clearInterval(interval);
+    return () => clearInterval(interval);
   }, [dispatch]);
 
   return { data, loading, error } as const;

@@ -2,6 +2,7 @@ import {
   DetailedHTMLProps,
   FC,
   Fragment,
+  HTMLAttributes,
   LiHTMLAttributes,
   memo,
   useCallback,
@@ -17,7 +18,7 @@ const CONTENT_CHAR_LIMIT = 250;
 
 type Props = {
   message: Message;
-} & DetailedHTMLProps<LiHTMLAttributes<HTMLLIElement>, HTMLLIElement>;
+} & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
 const Message: FC<Props> = ({ className, message, ...props }) => {
   const [contentShown, setContentShown] = useState(
@@ -43,7 +44,7 @@ const Message: FC<Props> = ({ className, message, ...props }) => {
   }, []);
 
   return (
-    <li className={cn(className, styles.message)} {...props}>
+    <div className={cn(className, styles.message)} {...props}>
       <div className={styles.message__controls}>
         <button className={styles.message__iconButton}>
           <StarIcon />
@@ -84,7 +85,7 @@ const Message: FC<Props> = ({ className, message, ...props }) => {
           ))}
         </div>
       )}
-    </li>
+    </div>
   );
 };
 export default memo(Message);

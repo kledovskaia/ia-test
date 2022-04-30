@@ -4,6 +4,7 @@ import {
   Fragment,
   LiHTMLAttributes,
   memo,
+  useCallback,
   useState,
 } from 'react';
 import cn from 'classnames';
@@ -24,11 +25,22 @@ const Message: FC<Props> = ({ className, message, ...props }) => {
       ? message.content
       : message.content.slice(0, CONTENT_CHAR_LIMIT).replace(/[^\s]+$/, '')
   );
+  const [isMoreButtonShown, setIsMoreButtonShown] = useState(
+    message.content.length > contentShown.length
+  );
 
-  const handleMoreClick = () => {
-    setContentShown(message.content);
-    // TODO
-  };
+  const handleMoreClick = useCallback(() => {
+    setIsMoreButtonShown(false);
+    for (
+      let i = 0, j = contentShown.length;
+      j < message.content.length;
+      i++, j++
+    ) {
+      setTimeout(() => {
+        setContentShown((state) => state + message.content[j]);
+      }, i * 10);
+    }
+  }, []);
 
   return (
     <li className={cn(className, styles.message)} {...props}>
@@ -50,7 +62,7 @@ const Message: FC<Props> = ({ className, message, ...props }) => {
       {message.content && (
         <>
           <p className={styles.message__content}>{contentShown}</p>
-          {message.content.length > contentShown.length && (
+          {isMoreButtonShown && (
             <button onClick={handleMoreClick} className={styles.message__more}>
               Далее
             </button>

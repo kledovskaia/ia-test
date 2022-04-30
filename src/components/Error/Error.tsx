@@ -2,10 +2,15 @@ import type { DetailedHTMLProps, FC, HTMLAttributes } from 'react';
 import { memo } from 'react';
 import cn from 'classnames';
 import styles from './Error.module.scss';
+import { connect } from 'react-redux';
+import { RootState } from '../../redux/store';
 
-type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+type Props = ReturnType<typeof mapStateToProps> &
+  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
-const Error: FC<Props> = ({ className, children, ...props }) => {
+const Error: FC<Props> = ({ className, children, error, ...props }) => {
+  if (!error) return null;
+
   return (
     <div className={cn(className, styles.error)} {...props}>
       {children}
@@ -13,4 +18,8 @@ const Error: FC<Props> = ({ className, children, ...props }) => {
   );
 };
 
-export default memo(Error);
+const mapStateToProps = (state: RootState) => ({
+  error: state.messages.error,
+});
+
+export default connect(mapStateToProps)(memo(Error));

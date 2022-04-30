@@ -16,4 +16,5 @@ type Message = {
   senderNumber: string;
   avatar?: string;
   isFavorite?: boolean;
+  _id?: string;
 };

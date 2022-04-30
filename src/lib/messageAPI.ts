@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 const baseUrl = 'http://f0665380.xsph.ru/';
 
 type RequestMessagesParams = {
@@ -24,6 +26,10 @@ export const getMessages = async (payload?: RequestMessagesParams) => {
       body: formData,
     });
     const { Messages } = (await response.json()) as MessagesResponse;
+
+    Messages?.forEach((m) => {
+      m._id = uuidv4();
+    });
 
     return Messages || [];
   } catch (error) {

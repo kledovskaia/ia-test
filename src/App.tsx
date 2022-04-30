@@ -1,5 +1,11 @@
-import { DetailedHTMLProps, FC, HTMLAttributes, useCallback } from 'react';
-import { useEffect, useRef } from 'react';
+import {
+  DetailedHTMLProps,
+  FC,
+  HTMLAttributes,
+  useCallback,
+  useState,
+} from 'react';
+import { useEffect } from 'react';
 import { useMessages } from './hooks/useMessages';
 import cn from 'classnames';
 import styles from './App.module.scss';
@@ -13,6 +19,7 @@ import Error from './components/Error/Error';
 import Loader from './components/Loader/Loader';
 import Button from './components/Button/Button';
 import { useAutoScroll } from './hooks/useAutoScroll';
+import { ReactComponent as OrderIcon } from './assets/order.svg';
 
 const handleScrollTop = () => {
   window.scroll({ left: 0, top: 0, behavior: 'smooth' });
@@ -30,22 +37,32 @@ type Props = ReturnType<typeof mapDispatchToProps> &
 
 const App: FC<Props> = ({ setIsFavorite, className, ...props }) => {
   const { data: messages, loading, error } = useMessages();
+  const { bottomRef, setIsScrollActive } =
+    useAutoScroll<HTMLLIElement>(messages);
+  const [order, setOrder] = useState<'old' | 'new'>('old');
 
-  const { bottomRef } = useAutoScroll<HTMLLIElement>(messages);
+  useEffect(() => {
+    setIsScrollActive(order === 'old');
+  }, [order]);
 
   const handleSetIsFavorite = useCallback(
     (params: InferArgType<typeof setIsFavorite>) => setIsFavorite(params),
     [setIsFavorite]
   );
 
-  const handleToggleOrder = () => {}; // TODO
+  const handleToggleOrder = useCallback(() => {
+    setOrder((state) => (state === 'new' ? 'old' : 'new'));
+  }, []);
 
   return (
     <>
       <div className={cn(className, styles.app)} {...props}>
         {!!messages.length && (
           <Button
-            className={cn(styles.app__button, styles.app__button_up)}
+            className={cn(
+              styles.app__scrollButton,
+              styles.app__scrollButton_up
+            )}
             handleClick={handleScrollTop}
           >
             <ArrowIcon />
@@ -53,24 +70,42 @@ const App: FC<Props> = ({ setIsFavorite, className, ...props }) => {
         )}
 
         <div className={styles.app__content}>
-          {!!messages.length && <Button handleClick={handleToggleOrder} />}
+          {!!messages.length && (
+            <Button
+              className={styles.app__orderButton}
+              handleClick={handleToggleOrder}
+            >
+              <OrderIcon />
+              <span>
+                Показывать: сначала {order === 'new' ? 'новые' : 'старые'}
+              </span>
+            </Button>
+          )}
           <Error />
           <Loader />
 
           <MessagesFeed>
-            {messages.map((message, index) => (
-              <li
-                key={`${index}-${message.id}`}
-                ref={index === messages.length - 1 ? bottomRef : null}
-              >
-                <Message handleClick={handleSetIsFavorite} message={message} />
-              </li>
-            ))}
+            {(order === 'old' ? messages : [...messages].reverse()).map(
+              (message, index) => (
+                <li
+                  key={message._id}
+                  ref={index === messages.length - 1 ? bottomRef : null}
+                >
+                  <Message
+                    handleClick={handleSetIsFavorite}
+                    message={message}
+                  />
+                </li>
+              )
+            )}
           </MessagesFeed>
         </div>
         {!!messages.length && (
           <Button
-            className={cn(styles.app__button, styles.app__button_down)}
+            className={cn(
+              styles.app__scrollButton,
+              styles.app__scrollButton_down
+            )}
             handleClick={handleScrollBottom}
           >
             <ArrowIcon />

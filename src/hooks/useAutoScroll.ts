@@ -1,12 +1,14 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export const useAutoScroll = <T extends HTMLElement, K = unknown>(
   messages: K
 ) => {
+  const [isScrollActive, setIsScrollActive] = useState(false);
   const previousOffsetTop = useRef(0);
   const bottomRef = useRef<T>(null);
 
   useEffect(() => {
+    if (!isScrollActive) return;
     if (!bottomRef.current) return;
     const difference = Math.abs(
       previousOffsetTop.current -
@@ -25,5 +27,5 @@ export const useAutoScroll = <T extends HTMLElement, K = unknown>(
     }
   }, [messages]);
 
-  return { bottomRef } as const;
+  return { bottomRef, setIsScrollActive } as const;
 };

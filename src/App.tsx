@@ -1,4 +1,4 @@
-import type { DetailedHTMLProps, FC, HTMLAttributes } from 'react';
+import { DetailedHTMLProps, FC, HTMLAttributes, useCallback } from 'react';
 import { useEffect, useRef } from 'react';
 import { useMessages } from './hooks/useMessages';
 import cn from 'classnames';
@@ -6,6 +6,9 @@ import styles from './App.module.scss';
 import Message from './components/Message/Message';
 import MessagesFeed from './components/MessagesFeed/MessagesFeed';
 import { ReactComponent as ArrowIcon } from './assets/arrow-down.svg';
+import { connect } from 'react-redux';
+import { setIsFavorite } from './redux/slices/messages';
+import { AppDispatch } from './redux/store';
 
 const handleScrollTop = () => {
   window.scroll({ left: 0, top: 0, behavior: 'smooth' });
@@ -18,18 +21,17 @@ const handleScrollBottom = () => {
   });
 };
 
-type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+type Props = ReturnType<typeof mapDispatchToProps> &
+  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
-const App: FC<Props> = ({ className, ...props }) => {
+const App: FC<Props> = ({ setIsFavorite, className, ...props }) => {
   const { data: messages, loading, error } = useMessages();
   const lastMessage = useRef<HTMLLIElement>(null);
   const previousOffsetTop = useRef(0);
-  const airSpace = useRef<HTMLButtonElement>(null);
-  const messagesContainer = useRef<HTMLDivElement>(null);
+  const airSpace = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!lastMessage.current) return;
-    if (!messagesContainer.current) return;
     if (!airSpace.current) return;
     const difference = Math.abs(
       previousOffsetTop.current -
@@ -48,41 +50,49 @@ const App: FC<Props> = ({ className, ...props }) => {
     }
   }, [messages]);
 
+  const handleSetIsFavorite = useCallback(
+    (params: InferArgType<typeof setIsFavorite>) => setIsFavorite(params),
+    [setIsFavorite]
+  );
+
   return (
     <>
       <div className={cn(className, styles.app)} {...props}>
         <button
-          className={cn(styles.app__button, styles.app__button_down)}
-          onClick={handleScrollBottom}
+          className={cn(styles.app__button, styles.app__button_up)}
+          onClick={handleScrollTop}
         >
-          <span>
-            <ArrowIcon />
-          </span>
+          <ArrowIcon />
         </button>
-        <div className={styles.app__content} ref={messagesContainer}>
+
+        <div className={styles.app__content}>
           <MessagesFeed>
             {messages.map((message, index) => (
               <li
                 key={`${index}-${message.id}`}
                 ref={index === messages.length - 1 ? lastMessage : null}
               >
-                <Message message={message} />
+                <Message handleClick={handleSetIsFavorite} message={message} />
               </li>
             ))}
+            <div ref={airSpace}></div>
           </MessagesFeed>
         </div>
         <button
-          className={cn(styles.app__button, styles.app__button_up)}
-          ref={airSpace}
-          onClick={handleScrollTop}
+          className={cn(styles.app__button, styles.app__button_down)}
+          onClick={handleScrollBottom}
         >
-          <span>
-            <ArrowIcon />
-          </span>
+          <ArrowIcon />
         </button>
       </div>
     </>
   );
 };
 
-export default App;
+const mapDispatchToProps = (dispatch: AppDispatch) => ({
+  setIsFavorite: (id: InferArgType<typeof setIsFavorite>) => {
+    dispatch(setIsFavorite(id));
+  },
+});
+
+export default connect(null, mapDispatchToProps)(App);

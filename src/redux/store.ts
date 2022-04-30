@@ -2,10 +2,28 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import messages from './slices/messages';
 
+const favorites = JSON.parse(localStorage.getItem('favorite-messages')!);
+
 export const store = configureStore({
+  preloadedState: {
+    messages: {
+      favorites: favorites || {},
+      data: [],
+      loading: false,
+      error: null,
+    },
+  },
   reducer: {
     messages,
   },
+});
+
+store.subscribe(() => {
+  const {
+    messages: { favorites },
+  } = store.getState();
+
+  localStorage.setItem('favorite-messages', JSON.stringify(favorites));
 });
 
 export type AppDispatch = typeof store.dispatch;

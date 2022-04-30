@@ -1,13 +1,5 @@
-import {
-  DetailedHTMLProps,
-  FC,
-  Fragment,
-  HTMLAttributes,
-  LiHTMLAttributes,
-  memo,
-  useCallback,
-  useState,
-} from 'react';
+import { Fragment, memo, useCallback, useState } from 'react';
+import type { DetailedHTMLProps, FC, HTMLAttributes } from 'react';
 import cn from 'classnames';
 import ImageFallback from '../../assets/avatar.png';
 import styles from './Message.module.scss';
@@ -18,9 +10,13 @@ const CONTENT_CHAR_LIMIT = 250;
 
 type Props = {
   message: Message;
+  handleClick: (params: {
+    id: Message['id'];
+    isFavorite: Message['isFavorite'];
+  }) => void;
 } & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
-const Message: FC<Props> = ({ className, message, ...props }) => {
+const Message: FC<Props> = ({ handleClick, className, message, ...props }) => {
   const [contentShown, setContentShown] = useState(
     message.content.length < CONTENT_CHAR_LIMIT
       ? message.content
@@ -43,10 +39,23 @@ const Message: FC<Props> = ({ className, message, ...props }) => {
     }
   }, []);
 
+  const handleStarClick = useCallback(() => {
+    console.log(message.id);
+    handleClick({
+      id: message.id,
+      isFavorite: !message.isFavorite,
+    });
+  }, [message, handleClick]);
+
   return (
     <div className={cn(className, styles.message)} {...props}>
       <div className={styles.message__controls}>
-        <button className={styles.message__iconButton}>
+        <button
+          onClick={handleStarClick}
+          className={cn(styles.message__iconButton, {
+            [styles.message__iconButton_active]: message.isFavorite,
+          })}
+        >
           <StarIcon />
         </button>
       </div>

@@ -15,4 +15,5 @@ type Message = {
   region: string;
   senderNumber: string;
   avatar?: string;
+  isFavorite?: boolean;
 };

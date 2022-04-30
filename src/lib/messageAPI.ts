@@ -21,13 +21,14 @@ export const getMessages = async (payload?: RequestMessagesParams) => {
     }
     const response = await fetch(baseUrl, {
       method: 'POST',
-      mode: 'no-cors',
       body: formData,
     });
     const { Messages } = (await response.json()) as MessagesResponse;
 
     return Messages || [];
   } catch (error) {
-    throw new Error((error as Error).message || 'Error fetching messages');
+    throw new Error(
+      'Проблема в CORS.Установите расширение или запустите хром из консоли с флагами --args --disable-web-security --user-data-dir="/tmp/chrome_dev"'
+    );
   }
 };

@@ -48,7 +48,6 @@ const messagesSlice = createSlice({
     });
     builder.addCase(fetchMessages.rejected, (state, action) => {
       state.loading = false;
-      console.log(action.payload);
       state.error = action.error.message || 'Ooops... Something went wrong!';
     });
   },

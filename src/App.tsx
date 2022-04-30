@@ -9,6 +9,10 @@ import { ReactComponent as ArrowIcon } from './assets/arrow-down.svg';
 import { connect } from 'react-redux';
 import { setIsFavorite } from './redux/slices/messages';
 import { AppDispatch } from './redux/store';
+import Error from './components/Error/Error';
+import Loader from './components/Loader/Loader';
+import Button from './components/Button/Button';
+import { useAutoScroll } from './hooks/useAutoScroll';
 
 const handleScrollTop = () => {
   window.scroll({ left: 0, top: 0, behavior: 'smooth' });
@@ -26,64 +30,48 @@ type Props = ReturnType<typeof mapDispatchToProps> &
 
 const App: FC<Props> = ({ setIsFavorite, className, ...props }) => {
   const { data: messages, loading, error } = useMessages();
-  const lastMessage = useRef<HTMLLIElement>(null);
-  const previousOffsetTop = useRef(0);
-  const airSpace = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!lastMessage.current) return;
-    if (!airSpace.current) return;
-    const difference = Math.abs(
-      previousOffsetTop.current -
-        (lastMessage.current.offsetTop + lastMessage.current.offsetHeight)
-    );
-
-    const shouldScroll =
-      document.body.offsetHeight - window.scrollY - window.innerHeight <=
-      difference;
-
-    previousOffsetTop.current =
-      lastMessage.current.offsetTop + lastMessage.current.offsetHeight;
-
-    if (shouldScroll) {
-      lastMessage.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [messages]);
+  const { bottomRef } = useAutoScroll<HTMLLIElement>(messages);
 
   const handleSetIsFavorite = useCallback(
     (params: InferArgType<typeof setIsFavorite>) => setIsFavorite(params),
     [setIsFavorite]
   );
 
+  const handleToggleOrder = () => {}; // TODO
+
   return (
     <>
       <div className={cn(className, styles.app)} {...props}>
-        <button
+        <Button
           className={cn(styles.app__button, styles.app__button_up)}
-          onClick={handleScrollTop}
+          handleClick={handleScrollTop}
         >
           <ArrowIcon />
-        </button>
+        </Button>
 
         <div className={styles.app__content}>
+          <Error />
+          <Loader />
+          <Button handleClick={handleToggleOrder} />
+
           <MessagesFeed>
             {messages.map((message, index) => (
               <li
                 key={`${index}-${message.id}`}
-                ref={index === messages.length - 1 ? lastMessage : null}
+                ref={index === messages.length - 1 ? bottomRef : null}
               >
                 <Message handleClick={handleSetIsFavorite} message={message} />
               </li>
             ))}
-            <div ref={airSpace}></div>
           </MessagesFeed>
         </div>
-        <button
+        <Button
           className={cn(styles.app__button, styles.app__button_down)}
-          onClick={handleScrollBottom}
+          handleClick={handleScrollBottom}
         >
           <ArrowIcon />
-        </button>
+        </Button>
       </div>
     </>
   );

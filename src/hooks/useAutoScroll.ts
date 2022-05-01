@@ -10,6 +10,7 @@ export const useAutoScroll = <T extends HTMLElement, K = unknown>(
   useEffect(() => {
     if (!isScrollActive) return;
     if (!bottomRef.current) return;
+
     const difference = Math.abs(
       previousOffsetTop.current -
         (bottomRef.current.offsetTop + bottomRef.current.offsetHeight)
@@ -25,7 +26,7 @@ export const useAutoScroll = <T extends HTMLElement, K = unknown>(
     if (shouldScroll) {
       bottomRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages]);
+  }, [messages, isScrollActive]);
 
   return { bottomRef, setIsScrollActive } as const;
 };

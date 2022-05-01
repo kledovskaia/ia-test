@@ -3,10 +3,10 @@ import { memo } from 'react';
 import cn from 'classnames';
 import styles from './Loader.module.scss';
 import { RootState } from '../../redux/store';
-import { connect } from 'react-redux';
 
-type Props = ReturnType<typeof mapStateToProps> &
-  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+type Props = {
+  loading: RootState['messages']['loading'];
+} & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
 const Loader: FC<Props> = ({ className, loading, ...props }) => {
   if (!loading) return null;
@@ -18,10 +18,4 @@ const Loader: FC<Props> = ({ className, loading, ...props }) => {
   );
 };
 
-const mapStateToProps = (state: RootState) => ({
-  loading: state.messages.loading && !state.messages.data.length,
-});
-
-const mapDispatchToProps = () => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(memo(Loader));
+export default memo(Loader);

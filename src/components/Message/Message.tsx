@@ -14,7 +14,7 @@ type Props = {
     id: Message['id'];
     isFavorite: Message['isFavorite'];
   }) => void;
-} & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+} & DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>;
 
 const Message: FC<Props> = ({ handleClick, className, message, ...props }) => {
   const [contentShown, setContentShown] = useState(
@@ -48,7 +48,7 @@ const Message: FC<Props> = ({ handleClick, className, message, ...props }) => {
   }, [message, handleClick]);
 
   return (
-    <div className={cn(className, styles.message)} {...props}>
+    <section className={cn(className, styles.message)} {...props}>
       <div className={styles.message__controls}>
         <button
           onClick={handleStarClick}
@@ -94,7 +94,7 @@ const Message: FC<Props> = ({ handleClick, className, message, ...props }) => {
           ))}
         </div>
       )}
-    </div>
+    </section>
   );
 };
 export default memo(Message);

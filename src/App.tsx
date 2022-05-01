@@ -21,10 +21,10 @@ import Button from './components/Button/Button';
 import { useAutoScroll } from './hooks/useAutoScroll';
 import { ReactComponent as OrderIcon } from './assets/order.svg';
 
-const handleScrollTop = () => {
+const scrollTop = () => {
   window.scroll({ left: 0, top: 0, behavior: 'smooth' });
 };
-const handleScrollBottom = () => {
+const scrollBottom = () => {
   window.scroll({
     left: 0,
     top: document.body.scrollHeight,
@@ -38,12 +38,12 @@ type Props = ReturnType<typeof mapDispatchToProps> &
 const App: FC<Props> = ({ setIsFavorite, className, ...props }) => {
   const { data: messages, loading, error, loadPrevious } = useMessages();
   const { bottomRef, setIsScrollActive } =
-    useAutoScroll<HTMLDivElement>(messages);
+    useAutoScroll<HTMLLIElement>(messages);
   const [order, setOrder] = useState<'old' | 'new'>('old');
 
   useEffect(() => {
     setIsScrollActive(order === 'old');
-  }, [order]);
+  }, [order, setIsScrollActive]);
 
   const handleSetIsFavorite = useCallback(
     (params: InferArgType<typeof setIsFavorite>) => setIsFavorite(params),
@@ -56,72 +56,72 @@ const App: FC<Props> = ({ setIsFavorite, className, ...props }) => {
 
   return (
     <>
-      <div className={cn(className, styles.app)} {...props}>
-        {!!messages.length && (
+      <Error error={error} />
+      <Loader loading={loading && !messages.length} />
+
+      {!!messages.length && (
+        <div className={cn(className, styles.app)} {...props}>
           <Button
             className={cn(
               styles.app__scrollButton,
               styles.app__scrollButton_up
             )}
-            handleClick={handleScrollTop}
+            handleClick={scrollTop}
           >
             <ArrowIcon />
           </Button>
-        )}
 
-        <section className={styles.app__content}>
-          <div className={styles.app__controls}>
-            {!!messages.length && (
-              <Button
-                className={styles.app__controlButton}
-                handleClick={handleToggleOrder}
-              >
-                <OrderIcon />
-                <span>
-                  Показывать: сначала {order === 'new' ? 'новые' : 'старые'}
-                </span>
-              </Button>
-            )}
-            {order === 'old' && (
-              <Button
-                className={styles.app__controlButton}
-                handleClick={loadPrevious}
-              >
-                Загрузить предыдущие сообщения
-              </Button>
-            )}
-          </div>
-          <Error />
-          <Loader />
+          <section className={styles.app__content}>
+            <div className={styles.app__controls}>
+              <>
+                <Button
+                  className={styles.app__controlButton}
+                  handleClick={handleToggleOrder}
+                >
+                  <OrderIcon />
+                  <span>
+                    Показывать: сначала {order === 'new' ? 'новые' : 'старые'}
+                  </span>
+                </Button>
 
-          <MessagesFeed>
-            {(order === 'old' ? messages : [...messages].reverse()).map(
-              (message) => (
-                <li key={message._id}>
-                  <Message
-                    handleClick={handleSetIsFavorite}
-                    message={message}
-                  />
-                </li>
-              )
-            )}
-          </MessagesFeed>
-          {order === 'old' && (
-            <div style={{ minHeight: '100px' }} ref={bottomRef}></div>
-          )}
-        </section>
-        {!!messages.length && (
+                {order === 'old' && (
+                  <Button
+                    className={styles.app__controlButton}
+                    handleClick={loadPrevious}
+                  >
+                    Загрузить предыдущие сообщения
+                  </Button>
+                )}
+              </>
+            </div>
+
+            <MessagesFeed>
+              {(order === 'old' ? messages : [...messages].reverse()).map(
+                (message, index) => (
+                  <li
+                    key={message._id}
+                    ref={index === messages.length - 1 ? bottomRef : null}
+                  >
+                    <Message
+                      handleClick={handleSetIsFavorite}
+                      message={message}
+                    />
+                  </li>
+                )
+              )}
+            </MessagesFeed>
+          </section>
           <Button
             className={cn(
               styles.app__scrollButton,
               styles.app__scrollButton_down
             )}
-            handleClick={handleScrollBottom}
+            handleClick={scrollBottom}
           >
             <ArrowIcon />
           </Button>
-        )}
-      </div>
+        </div>
+      )}
     </>
   );
 };

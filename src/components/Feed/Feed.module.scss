@@ -1,4 +1,4 @@
-.app {
+.feed {
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -6,42 +6,6 @@
   &__content {
     width: 88rem;
     max-width: 70vw;
-  }
-
-  &__controls {
-    & > * + * {
-      margin-top: 1rem;
-    }
-  }
-
-  &__controlButton {
-    border: none;
-    background: none;
-    padding: 1rem;
-    cursor: pointer;
-    text-align: center;
-    display: block;
-    width: 100%;
-    font-size: 2rem;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    transition: background-color 0.2s;
-
-    & > * + * {
-      margin-left: 2rem;
-    }
-
-    svg {
-      max-width: 5rem;
-      max-height: 5rem;
-    }
-
-    &:hover {
-      text-decoration: underline;
-    }
   }
 
   &__scrollButton {

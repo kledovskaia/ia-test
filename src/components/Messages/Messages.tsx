@@ -1,11 +1,4 @@
-import {
-  memo,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import type { DetailedHTMLProps, FC, HTMLAttributes } from 'react';
 import Button from '../Button/Button';
 import { useAutoScroll } from '../../hooks/useAutoScroll';
@@ -17,7 +10,6 @@ import { connect } from 'react-redux';
 import Message from '../Message/Message';
 import FlipMove from 'react-flip-move';
 import styles from './Messages.module.scss';
-import { debounce } from '../../helpers';
 
 type Props = {
   isShown: boolean;

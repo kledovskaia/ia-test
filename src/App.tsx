@@ -12,8 +12,12 @@ const App = () => {
       <Error error={error} />
       <Loader loading={loading && !messages.length} />
 
-      <Feed>
-        <Messages messages={messages} loadPrevious={loadPrevious} />
+      <Feed isShown={!!messages.length}>
+        <Messages
+          isShown={!!messages.length}
+          messages={messages}
+          loadPrevious={loadPrevious}
+        />
       </Feed>
     </>
   );

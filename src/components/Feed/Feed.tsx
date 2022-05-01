@@ -5,29 +5,38 @@ import cn from 'classnames';
 import styles from './Feed.module.scss';
 import { DetailedHTMLProps, FC, HTMLAttributes } from 'react';
 
-type Props = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+type Props = {
+  isShown: boolean;
+} & DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
-const Feed: FC<Props> = ({ className, children, ...props }) => {
+const Feed: FC<Props> = ({ className, children, isShown, ...props }) => {
   return (
     <div className={cn(className, styles.feed)} {...props}>
-      <Button
-        className={cn(styles.feed__scrollButton, styles.feed__scrollButton_up)}
-        handleClick={scrollTop}
-      >
-        <ArrowIcon />
-      </Button>
+      {isShown && (
+        <Button
+          className={cn(
+            styles.feed__scrollButton,
+            styles.feed__scrollButton_up
+          )}
+          handleClick={scrollTop}
+        >
+          <ArrowIcon />
+        </Button>
+      )}
 
       <section className={styles.feed__content}>{children}</section>
 
-      <Button
-        className={cn(
-          styles.feed__scrollButton,
-          styles.feed__scrollButton_down
-        )}
-        handleClick={scrollBottom}
-      >
-        <ArrowIcon />
-      </Button>
+      {isShown && (
+        <Button
+          className={cn(
+            styles.feed__scrollButton,
+            styles.feed__scrollButton_down
+          )}
+          handleClick={scrollBottom}
+        >
+          <ArrowIcon />
+        </Button>
+      )}
     </div>
   );
 };

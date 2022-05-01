@@ -12,6 +12,7 @@ import FlipMove from 'react-flip-move';
 import styles from './Messages.module.scss';
 
 type Props = {
+  isShown: boolean;
   messages: Message[];
   loadPrevious: () => void;
 } & ReturnType<typeof mapDispatchToProps> &
@@ -20,6 +21,7 @@ type Props = {
 const Messages: FC<Props> = ({
   className,
   messages,
+  isShown,
   loadPrevious,
   setIsFavorite,
   ...props
@@ -43,26 +45,28 @@ const Messages: FC<Props> = ({
 
   return (
     <section className={cn(className, styles.messages)} {...props}>
-      <div className={styles.messages__controls}>
-        <Button
-          className={styles.messages__controlButton}
-          handleClick={handleToggleOrder}
-        >
-          <OrderIcon />
-          <span>
-            Показывать: сначала {order === 'new' ? 'новые' : 'старые'}
-          </span>
-        </Button>
-
-        {order === 'old' && (
+      {isShown && (
+        <div className={styles.messages__controls}>
           <Button
             className={styles.messages__controlButton}
-            handleClick={loadPrevious}
+            handleClick={handleToggleOrder}
           >
-            Загрузить предыдущие сообщения
+            <OrderIcon />
+            <span>
+              Показывать: сначала {order === 'new' ? 'новые' : 'старые'}
+            </span>
           </Button>
-        )}
-      </div>
+
+          {order === 'old' && (
+            <Button
+              className={styles.messages__controlButton}
+              handleClick={loadPrevious}
+            >
+              Загрузить предыдущие сообщения
+            </Button>
+          )}
+        </div>
+      )}
       {/* Кажется, какая-то проблема с типизацией у FlipMove */}
       {/* @ts-ignore */}
       <FlipMove

@@ -8,21 +8,21 @@ export const fetchMessages = createAsyncThunk<
   { state: RootState }
 >('messages/fetchMessages', async (payload, { getState }) => {
   const state = getState();
-  const lastMessage = state.messages.data[state.messages.data.length - 1];
+  const mostResentMessage = state.messages.data[state.messages.data.length - 1];
 
   let newMessages: Message[] = [];
 
   if (payload) {
     newMessages = await getMessages(payload);
-  } else if (!lastMessage) {
+  } else if (!mostResentMessage) {
     newMessages = await getMessages();
   } else {
     newMessages = await getMessages({
-      messageId: lastMessage.id,
+      messageId: mostResentMessage.id,
     });
     // Если бы сообщения были действительно новыми, то:
     // Проверить наличие в полученном массиве
-    // сообщения с id === lastMessage.id,
+    // сообщения с id === mostResentMessage.id,
     // и до тех пор, пока в ответе не будет содержаться
     // такое сообщение, запрашивать новые порции
     // и собирать их вместе, когда в ответе появится
@@ -32,4 +32,26 @@ export const fetchMessages = createAsyncThunk<
   }
 
   return newMessages;
+});
+
+export const loadPreviousMessages = createAsyncThunk<
+  Message[],
+  InferArgType<typeof getMessages>,
+  { state: RootState }
+>('messages/loadPrevious', async (payload, { getState }) => {
+  const state = getState();
+  const oldestMessage = state.messages.data[0];
+
+  let previousMessages: Message[] = [];
+
+  if (oldestMessage) {
+    previousMessages = await getMessages({
+      messageId: oldestMessage.id,
+      oldMessages: true,
+    });
+  } else {
+    previousMessages = await getMessages();
+  }
+
+  return previousMessages;
 });

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { fetchMessages } from '../thunks/messages';
+import * as thunks from '../thunks/messages';
 
 const initialState = {
   data: [] as Message[],
@@ -32,11 +32,7 @@ const messagesSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchMessages.pending, (state) => {
-      state.error = null;
-      state.loading = true;
-    });
-    builder.addCase(fetchMessages.fulfilled, (state, action) => {
+    builder.addCase(thunks.fetchMessages.fulfilled, (state, action) => {
       state.error = null;
       state.loading = false;
       state.data.push(
@@ -46,9 +42,25 @@ const messagesSlice = createSlice({
         }))
       );
     });
-    builder.addCase(fetchMessages.rejected, (state, action) => {
+    builder.addCase(thunks.loadPreviousMessages.fulfilled, (state, action) => {
+      state.error = null;
       state.loading = false;
-      state.error = action.error.message || 'Ooops... Something went wrong!';
+      state.data.unshift(
+        ...action.payload.map((item) => ({
+          ...item,
+          isFavorite: item.isFavorite ?? state.favorites[item.id],
+        }))
+      );
+    });
+    Object.values(thunks).forEach((thunk) => {
+      builder.addCase(thunk.pending, (state) => {
+        state.error = null;
+        state.loading = true;
+      });
+      builder.addCase(thunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Ooops... Something went wrong!';
+      });
     });
   },
 });

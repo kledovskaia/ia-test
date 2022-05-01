@@ -34,7 +34,7 @@ export const getMessages = async (payload?: RequestMessagesParams) => {
     return Messages || [];
   } catch (error) {
     throw new Error(
-      'Проблема в CORS.Установите расширение или запустите хром из консоли с флагами --args --disable-web-security --user-data-dir="/tmp/chrome_dev"'
+      'Возможно, проблема в CORS.Установите расширение или запустите хром из консоли с флагами --args --disable-web-security --user-data-dir="/tmp/chrome_dev"'
     );
   }
 };

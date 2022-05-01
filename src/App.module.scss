@@ -8,7 +8,13 @@
     max-width: 70vw;
   }
 
-  &__orderButton {
+  &__controls {
+    & > * + * {
+      margin-top: 1rem;
+    }
+  }
+
+  &__controlButton {
     border: none;
     background: none;
     padding: 1rem;

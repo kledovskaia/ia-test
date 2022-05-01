@@ -36,9 +36,9 @@ type Props = ReturnType<typeof mapDispatchToProps> &
   DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
 const App: FC<Props> = ({ setIsFavorite, className, ...props }) => {
-  const { data: messages, loading, error } = useMessages();
+  const { data: messages, loading, error, loadPrevious } = useMessages();
   const { bottomRef, setIsScrollActive } =
-    useAutoScroll<HTMLLIElement>(messages);
+    useAutoScroll<HTMLDivElement>(messages);
   const [order, setOrder] = useState<'old' | 'new'>('old');
 
   useEffect(() => {
@@ -69,28 +69,35 @@ const App: FC<Props> = ({ setIsFavorite, className, ...props }) => {
           </Button>
         )}
 
-        <div className={styles.app__content}>
-          {!!messages.length && (
-            <Button
-              className={styles.app__orderButton}
-              handleClick={handleToggleOrder}
-            >
-              <OrderIcon />
-              <span>
-                Показывать: сначала {order === 'new' ? 'новые' : 'старые'}
-              </span>
-            </Button>
-          )}
+        <section className={styles.app__content}>
+          <div className={styles.app__controls}>
+            {!!messages.length && (
+              <Button
+                className={styles.app__controlButton}
+                handleClick={handleToggleOrder}
+              >
+                <OrderIcon />
+                <span>
+                  Показывать: сначала {order === 'new' ? 'новые' : 'старые'}
+                </span>
+              </Button>
+            )}
+            {order === 'old' && (
+              <Button
+                className={styles.app__controlButton}
+                handleClick={loadPrevious}
+              >
+                Загрузить предыдущие сообщения
+              </Button>
+            )}
+          </div>
           <Error />
           <Loader />
 
           <MessagesFeed>
             {(order === 'old' ? messages : [...messages].reverse()).map(
-              (message, index) => (
-                <li
-                  key={message._id}
-                  ref={index === messages.length - 1 ? bottomRef : null}
-                >
+              (message) => (
+                <li key={message._id}>
                   <Message
                     handleClick={handleSetIsFavorite}
                     message={message}
@@ -99,7 +106,10 @@ const App: FC<Props> = ({ setIsFavorite, className, ...props }) => {
               )
             )}
           </MessagesFeed>
-        </div>
+          {order === 'old' && (
+            <div style={{ minHeight: '100px' }} ref={bottomRef}></div>
+          )}
+        </section>
         {!!messages.length && (
           <Button
             className={cn(

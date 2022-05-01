@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../redux/store';
-import { fetchMessages } from '../redux/thunks/messages';
+import { fetchMessages, loadPreviousMessages } from '../redux/thunks/messages';
 
 const INTERVAL_SEC = 5;
 
@@ -19,5 +19,11 @@ export const useMessages = () => {
     return () => clearInterval(interval);
   }, [dispatch]);
 
-  return { data, loading, error } as const;
+  const loadPrevious = useCallback(async () => {
+    const result = await dispatch(loadPreviousMessages());
+
+    console.log(result);
+  }, []);
+
+  return { data, loading, error, loadPrevious } as const;
 };

@@ -10,7 +10,7 @@ export const useAutoScroll = <T extends HTMLElement, K = unknown>(
   useEffect(() => {
     if (!isScrollActive) return;
     if (!bottomRef.current) return;
-    if (!previousOffsetTop.current) {
+    if (previousOffsetTop.current <= window.innerHeight) {
       previousOffsetTop.current =
         bottomRef.current.offsetTop + bottomRef.current.offsetHeight;
       return;

@@ -40,7 +40,6 @@ const Message: FC<Props> = ({ handleClick, className, message, ...props }) => {
   }, []);
 
   const handleStarClick = useCallback(() => {
-    console.log(message.id);
     handleClick({
       id: message.id,
       isFavorite: !message.isFavorite,

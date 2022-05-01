@@ -19,10 +19,8 @@ export const useMessages = () => {
     return () => clearInterval(interval);
   }, [dispatch]);
 
-  const loadPrevious = useCallback(async () => {
-    const result = await dispatch(loadPreviousMessages());
-
-    console.log(result);
+  const loadPrevious = useCallback(() => {
+    dispatch(loadPreviousMessages());
   }, []);
 
   return { data, loading, error, loadPrevious } as const;

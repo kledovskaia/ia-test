@@ -20,6 +20,7 @@ import Loader from './components/Loader/Loader';
 import Button from './components/Button/Button';
 import { useAutoScroll } from './hooks/useAutoScroll';
 import { ReactComponent as OrderIcon } from './assets/order.svg';
+import FlipMove from 'react-flip-move';
 
 const scrollTop = () => {
   window.scroll({ left: 0, top: 0, behavior: 'smooth' });
@@ -38,7 +39,7 @@ type Props = ReturnType<typeof mapDispatchToProps> &
 const App: FC<Props> = ({ setIsFavorite, className, ...props }) => {
   const { data: messages, loading, error, loadPrevious } = useMessages();
   const { bottomRef, setIsScrollActive } =
-    useAutoScroll<HTMLLIElement>(messages);
+    useAutoScroll<HTMLDivElement>(messages);
   const [order, setOrder] = useState<'old' | 'new'>('old');
 
   useEffect(() => {
@@ -96,20 +97,21 @@ const App: FC<Props> = ({ setIsFavorite, className, ...props }) => {
             </div>
 
             <MessagesFeed>
-              {(order === 'old' ? messages : [...messages].reverse()).map(
-                (message, index) => (
-                  <li
-                    key={message._id}
-                    ref={index === messages.length - 1 ? bottomRef : null}
-                  >
-                    <Message
-                      handleClick={handleSetIsFavorite}
-                      message={message}
-                    />
-                  </li>
-                )
-              )}
+              {/* @ts-ignore */}
+              <FlipMove typeName={null} staggerDurationBy="30" duration={500}>
+                {(order === 'old' ? messages : [...messages].reverse()).map(
+                  (message, index) => (
+                    <li key={message._id}>
+                      <Message
+                        handleClick={handleSetIsFavorite}
+                        message={message}
+                      />
+                    </li>
+                  )
+                )}
+              </FlipMove>
             </MessagesFeed>
+            <div ref={bottomRef}></div>
           </section>
           <Button
             className={cn(

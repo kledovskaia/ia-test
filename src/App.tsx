@@ -97,10 +97,11 @@ const App: FC<Props> = ({ setIsFavorite, className, ...props }) => {
             </div>
 
             <MessagesFeed>
+              {/* Кажется, какая-то проблема с типизацией у FlipMove */}
               {/* @ts-ignore */}
               <FlipMove typeName={null} staggerDurationBy="30" duration={500}>
                 {(order === 'old' ? messages : [...messages].reverse()).map(
-                  (message, index) => (
+                  (message) => (
                     <li key={message._id}>
                       <Message
                         handleClick={handleSetIsFavorite}

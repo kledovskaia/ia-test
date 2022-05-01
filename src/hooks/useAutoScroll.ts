@@ -10,6 +10,11 @@ export const useAutoScroll = <T extends HTMLElement, K = unknown>(
   useEffect(() => {
     if (!isScrollActive) return;
     if (!bottomRef.current) return;
+    if (!previousOffsetTop.current) {
+      previousOffsetTop.current =
+        bottomRef.current.offsetTop + bottomRef.current.offsetHeight;
+      return;
+    }
 
     const difference = Math.abs(
       previousOffsetTop.current -

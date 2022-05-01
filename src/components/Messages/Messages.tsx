@@ -1,4 +1,11 @@
-import { memo, useCallback, useEffect, useState } from 'react';
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import type { DetailedHTMLProps, FC, HTMLAttributes } from 'react';
 import Button from '../Button/Button';
 import { useAutoScroll } from '../../hooks/useAutoScroll';
@@ -10,6 +17,7 @@ import { connect } from 'react-redux';
 import Message from '../Message/Message';
 import FlipMove from 'react-flip-move';
 import styles from './Messages.module.scss';
+import { debounce } from '../../helpers';
 
 type Props = {
   isShown: boolean;
@@ -29,6 +37,13 @@ const Messages: FC<Props> = ({
   const { bottomRef, setIsScrollActive } =
     useAutoScroll<HTMLDivElement>(messages);
   const [order, setOrder] = useState<'old' | 'new'>('old');
+  const [isFirstRender, setIsFirstRender] = useState(true);
+
+  useEffect(() => {
+    if (!isFirstRender) return;
+
+    setIsFirstRender(false);
+  }, []);
 
   useEffect(() => {
     setIsScrollActive(order === 'old');
@@ -74,6 +89,11 @@ const Messages: FC<Props> = ({
         typeName={'ul'}
         staggerDurationBy="30"
         duration={500}
+        disableAllAnimations={
+          !isFirstRender || order === 'new'
+            ? window.scrollY !== 0
+            : document.body.offsetHeight !== window.scrollY + window.innerHeight
+        }
       >
         {(order === 'old' ? messages : [...messages].reverse()).map(
           (message) => (

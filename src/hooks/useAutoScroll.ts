@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 export const useAutoScroll = <T extends HTMLElement, K = unknown>(
   messages: K
@@ -8,7 +8,6 @@ export const useAutoScroll = <T extends HTMLElement, K = unknown>(
   const bottomRef = useRef<T>(null);
 
   useEffect(() => {
-    if (!isScrollActive) return;
     if (!bottomRef.current) return;
     if (previousOffsetTop.current <= window.innerHeight) {
       previousOffsetTop.current =
@@ -21,17 +20,26 @@ export const useAutoScroll = <T extends HTMLElement, K = unknown>(
         (bottomRef.current.offsetTop + bottomRef.current.offsetHeight)
     );
 
+    previousOffsetTop.current =
+      bottomRef.current.offsetTop + bottomRef.current.offsetHeight;
+
+    if (!isScrollActive && window.scrollY) {
+      window.scroll({
+        top: window.scrollY + difference,
+      });
+      return;
+    }
     const shouldScroll =
       document.body.offsetHeight - window.scrollY - window.innerHeight <=
       difference;
-
-    previousOffsetTop.current =
-      bottomRef.current.offsetTop + bottomRef.current.offsetHeight;
 
     if (shouldScroll) {
       bottomRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages, isScrollActive]);
 
-  return { bottomRef, setIsScrollActive } as const;
+  return {
+    bottomRef,
+    setIsScrollActive,
+  } as const;
 };

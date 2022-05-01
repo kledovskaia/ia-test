@@ -13,3 +13,17 @@ export const scrollBottom = () => {
     behavior: 'smooth',
   });
 };
+
+export const debounce = <T, K extends (...args: T[]) => void>(
+  fn: K,
+  ms = 300
+) => {
+  let isCooldown = false;
+
+  return function (...args: T[]) {
+    if (isCooldown) return;
+    fn(...args);
+    isCooldown = true;
+    setTimeout(() => (isCooldown = false), ms);
+  };
+};
